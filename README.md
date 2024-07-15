@@ -1,7 +1,15 @@
 # Northcoders News API
 
-For instructions, please head over to [L2C NC News](https://l2c.northcoders.com/courses/be/nc-news).
 
+## Environment Variables
+
+To run this project locally, you need to create two environment files: `.env.development` and `.env.test`.
+
+
+
+### Installing Dependencies
+
+Run `npm install` to install the required packages.
 
 
 --- 
