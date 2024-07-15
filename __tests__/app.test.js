@@ -43,4 +43,15 @@ describe('GET /api/topics', () => {
         })
     })
 })
-//NEW TEST HERE
+describe('GET /api/articles/:article_id',()=> {
+    it('GET: 200 responds with a article depending on the article_id', () => {
+        return request(app)
+        .get('/api/articles/1')
+        .expect(200)
+        .then((response) => {
+            expect(response.body.article).toHaveProperty('title')
+            expect(response.body.article).toHaveProperty('author')
+        })
+    })
+
+})
