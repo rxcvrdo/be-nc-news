@@ -3,6 +3,7 @@ const seed = require('../db/seeds/seed')
 const request = require('supertest')
 const app = require('../app')
 const data = require('../db/data/test-data/index')
+const endpoints = require('../endpoints.json')
 
 beforeEach(() => {
     return seed(data)
@@ -32,5 +33,13 @@ describe('GET /api/topics', () => {
         .then((response => {
             expect(response.body.message).toBe('Not found')
         }))
+    })
+    it('GET /api: responds with json object representing all of the available endpoints', () =>{
+        return request(app)
+        .get('/api')
+        .expect(200)
+        .then((response) =>{
+            expect(response.body.endpoints).toEqual(endpoints)
+        })
     })
 })
