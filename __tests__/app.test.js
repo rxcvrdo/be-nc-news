@@ -49,15 +49,14 @@ describe('GET /api/articles/:article_id',()=> {
         .get('/api/articles/1')
         .expect(200)
         .then((response) => {
-            expect(response.body.article).toHaveProperty('title')
-            expect(response.body.article).toHaveProperty('author')
-            expect(response.body.article).toHaveProperty('topic')
-            expect(response.body.article).toHaveProperty('article_id')
-            expect(response.body.article).toHaveProperty('body')
-            expect(response.body.article).toHaveProperty('topic')
-            expect(response.body.article).toHaveProperty('created_at')
-            expect(response.body.article).toHaveProperty('votes')
-            expect(response.body.article).toHaveProperty('article_img_url')
+            expect(response.body.article.title).toBe('Living in the shadow of a great man')
+            expect(response.body.article.author).toBe('butter_bridge')
+            expect(response.body.article.topic).toBe('mitch')
+            expect(response.body.article.article_id).toBe(1)
+            expect(response.body.article.body).toBe('I find this existence challenging')
+            expect(response.body.article.created_at).toBe('2020-07-09T20:11:00.000Z')
+            expect(response.body.article.votes).toBe(100)
+            expect(response.body.article.article_img_url).toBe('https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700')
         })
     })
     it('GET: 404 responds with an appropriate status and error message when given an valid id that doesnt exist ', () => {
@@ -76,5 +75,65 @@ describe('GET /api/articles/:article_id',()=> {
             expect(response.body.message).toBe('Bad request')
         })
     })
-//ndeeferf
+
+})
+describe('GET /api/articles', () => {
+    it('GET: 200 responds with appropriate status and with an array of articles',() => {
+        return request(app)
+        .get('/api/articles')
+        .expect(200)
+        .then((response) =>{
+            const articles = response.body.articles
+            expect(Array.isArray(articles)).toBe(true)
+            expect(articles.length).toBeGreaterThan(0)
+            articles.forEach((article) =>{
+                expect(article).toHaveProperty('author')
+                expect(article).toHaveProperty('title')
+                expect(article).toHaveProperty('article_id')
+                expect(article).toHaveProperty('topic')
+                expect(article).toHaveProperty('votes')
+                expect(article).toHaveProperty('article_img_url')
+                expect(article).toHaveProperty('comment_count')
+                expect(article).not.toHaveProperty('body')
+            })
+        })
+    })
+    it('should return an array of articles in descending order by default', () => {
+        return request(app)
+        .get('/api/articles')
+        .expect(200)
+        .then((response) => {
+            expect(response.body.articles.length).toBeGreaterThan(0)
+            expect(response.body.articles).toBeSortedBy('created_at',
+                {descending: true})
+        })
+    })
+    it('should return an array of articles by the given sort by query',() => {
+        return request(app)
+        .get('/api/articles?sort_by=votes')
+        .expect(200)
+        .expect(200)
+        .then((response) => {
+            expect(response.body.articles.length).toBeGreaterThan(0)
+            expect(response.body.articles).toBeSortedBy('votes',
+                {descending: true})
+        })
+    })
+    it('it should return a 400 when given a query that does not exist', () => {
+        return request(app)
+        .get('/api/articles?sort_by=favourite_cheese')
+        .expect(400)
+        .then((response) =>{
+            expect(response.body.message).toBe('Invalid request')
+        })
+    })
+    it('it should return a 400 when given a order that does not exist', () => {
+        return request(app)
+        .get('/api/articles?sort_by=votes&order=parrallel')
+        .expect(400)
+        .then((response) =>{
+            expect(response.body.message).toBe('Invalid request')
+        })
+    })
+    
 })

@@ -1,7 +1,7 @@
-const {selectTopics, fetchArticleById} = require('../models/news-model')
+const {selectTopics, fetchArticleById, fetchAllArticles} = require('../models/news-model')
 
 exports.getTopics = (req, res, next) => {
-    console.log(res)
+   
     selectTopics().then((topics) => {
         res.status(200).send({topics})
     })
@@ -12,11 +12,17 @@ exports.getArticleById = (req, res, next) => {
     fetchArticleById(article_id).then((article) =>{
         res.status(200).send({article})
     }).catch((err) => {
-        if (err.status ===404){
-            res.status(404).send({ message: 'article does not exist'})
-        }else {
-            next(err)
-        }
+        next(err)
+    })
+}
+
+exports.getAllArticles = (req, res, next) => {
+    const {sort_by, order} = req.query
+    fetchAllArticles(sort_by, order)
+    .then((articles) => {
+        res.status(200).send({articles})
+    }).catch((err) => {
+        next(err)
     })
 }
 
