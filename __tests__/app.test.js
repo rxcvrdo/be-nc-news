@@ -51,6 +51,29 @@ describe('GET /api/articles/:article_id',()=> {
         .then((response) => {
             expect(response.body.article).toHaveProperty('title')
             expect(response.body.article).toHaveProperty('author')
+            expect(response.body.article).toHaveProperty('topic')
+            expect(response.body.article).toHaveProperty('article_id')
+            expect(response.body.article).toHaveProperty('body')
+            expect(response.body.article).toHaveProperty('topic')
+            expect(response.body.article).toHaveProperty('created_at')
+            expect(response.body.article).toHaveProperty('votes')
+            expect(response.body.article).toHaveProperty('article_img_url')
+        })
+    })
+    it('GET: 404 responds with an appropriate status and error message when given an valid id that doesnt exist ', () => {
+        return request(app)
+        .get('/api/articles/999')
+        .expect(404) 
+        .then((response) => {
+            expect(response.body.message).toBe('article does not exist')
+        })
+    })
+    it('GET: 400 responds with an appropriate error status and message when given an invalid id', () => {
+        return request(app)
+        .get('/api/articles/cheese')
+        .expect(400)
+        .then((response) => {
+            expect(response.body.message).toBe('Bad request')
         })
     })
 
