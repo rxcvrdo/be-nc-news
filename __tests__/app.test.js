@@ -228,3 +228,45 @@ describe('POST /api/article/:article_id/comments', () => {
     })
     
 })
+describe('PATCH /api/articles/:article_id', () => {
+    it('should update the article votes whilst returning the updated version of article', () => {
+        return request(app)
+        .patch('/api/articles/1')
+        .send({inc_votes: 1})
+        .expect(200)
+        .then((response) => {
+            const {article} = response.body
+            expect(article.article_id).toBe(1)
+            expect(article.votes).toBe(101)
+        })
+    })
+    it('should decrease the votes when given a number that is negative', () => {
+        return request(app)
+        .patch('/api/articles/1')
+        .send({inc_votes: -50})
+        .expect(200)
+        .then((response) => {
+            const {article} = response.body
+            expect(article.article_id).toBe(1)
+            expect(article.votes).toBe(50)
+        }) 
+    })
+    it('POST: 404 should return an appropriate status and message when given a article that doesnt exist', () => {
+        return request(app)
+        .patch('/api/articles/9999')
+        .send({inc_votes: 1})
+        .expect(404)
+        .then((response) => {
+            expect(response.body.message).toBe('article not found')
+        })
+    })
+    it('POST: 400 it should return the appropriate status and message for invalid inc_votes', () => {
+        return request(app)
+        .patch('/api/articles/1')
+        .send({inc_votes: 'oneHundred'})
+        .expect(400)
+        .then((response) => {
+            expect (response.body.message).toBe('Bad request')
+        })
+    })
+})
