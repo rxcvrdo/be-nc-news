@@ -189,3 +189,42 @@ describe('GET /api/article/:article_id/comments',() => {
     })
 
 })
+describe('POST /api/article/:article_id/comments', () => {
+    it('POST: 201 should add a comment for the given article_id', () => {
+        const newComment = {username: 'butter_bridge', body:'THIS ARTICLE SUCKS!'}
+        return request(app)
+        .post('/api/articles/1/comments')
+        .expect(201)
+        .send(newComment)
+        .then((response) => { 
+            const {comment} = response.body
+            expect(comment).toHaveProperty('comment_id')
+            expect(comment.article_id).toBe(1)
+            expect(comment.author).toBe('butter_bridge')
+            expect(comment.body).toBe('THIS ARTICLE SUCKS!')
+            expect(comment).toHaveProperty('created_at')
+            expect(comment.created_at).toBeString()
+        })
+    })
+    it('gives an appropriate status code and error message when given a valid id that doesnt exist' , () => {
+        const newComment = {username: 'butter_bridge', body:'THIS ARTICLE SUCKS!'}
+        return request(app)
+        .post('/api/articles/9999/comments')
+        .expect(404)
+        .send(newComment)
+        .then((response) => {
+            expect(response.body.message).toBe('article not found')
+        })
+    })
+    it('gives an appropriate status code and error message when given an invalid if', () => {
+        const newComment = {username: 'butter_bridge', body:'THIS ARTICLE SUCKS!'}
+        return request(app)
+        .post('/api/articles/teacup/comments')
+        .expect(400)
+        .send(newComment)
+        .then((response) => {
+            expect(response.body.message).toBe('Bad request')
+        })
+    })
+    
+})
