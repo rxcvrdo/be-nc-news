@@ -86,6 +86,12 @@
           "created_at": "2020-11-07T20:30:00.000Z"
         } 
       }
+  },
+  "DELETE /api/comments/:comment_id": {
+    "description": "deletes the given comment by comment_id",
+    "exampleResponse": {
+      "status": 204
+    }
   }
   
 }
