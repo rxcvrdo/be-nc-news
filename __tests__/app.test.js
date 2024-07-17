@@ -4,6 +4,7 @@ const request = require('supertest')
 const app = require('../app')
 const data = require('../db/data/test-data/index')
 const endpoints = require('../endpoints.json')
+const comments = require('../db/data/test-data/comments')
 
 beforeEach(() => {
     return seed(data)
@@ -136,4 +137,55 @@ describe('GET /api/articles', () => {
         })
     })
     
+})
+describe('GET /api/article/:article_id/comments',() => {
+    it('should return an array of comments for the given article_id', () => {
+     return request(app)
+     .get('/api/articles/1/comments')
+     .expect(200)
+     .then((response) => {
+        expect(response.body.comments.length).toBeGreaterThan(0)
+        const comments = response.body.comments;
+        comments.forEach((comment) => {
+            expect(comment).toHaveProperty('comment_id')
+            expect(comment.comment_id).toBeNumber()
+            expect(comment).toHaveProperty('votes')
+            expect(comment.votes).toBeNumber()
+            expect(comment).toHaveProperty('created_at')
+            expect(comment.created_at).toBeString()
+            expect(comment).toHaveProperty('author')
+            expect(comment.author).toBeString()
+            expect(comment).toHaveProperty('body')
+            expect(comment.body).toBeString()
+            expect(comment).toHaveProperty('article_id')
+            expect(comment.article_id).toBeNumber()
+        })
+     })   
+    })
+    it('GET: 200 should return an array of comments in descending order',() => {
+        return request(app)
+        .get('/api/articles/1/comments')
+        .expect(200)
+        .then((response) => {
+            expect(response.body.comments.length).toBeGreaterThan(0)
+            expect(response.body.comments).toBeSortedBy('created_at',
+                {descending: true})
+        })
+    })
+    it('Get: 404 should return appropriate status and message when given a valid article_id that doesnt exist', () => {
+        return request(app)
+        .get('/api/articles/999/comments')
+        .expect(404)
+        .then(({body}) => {
+            expect(body.message).toBe('article not found')
+        })
+    })
+    it('GET: 400 should return appropriate status and message when given a non-valid article id', () => {
+        return request(app)
+        .get('/api/articles/riceIstheBest/comments')
+        .then((response) => {
+            expect(response.body.message).toBe('Bad request')
+        })
+    })
+
 })

@@ -14,9 +14,7 @@ exports.fetchArticleById =(article_id) => {
         }
         return result.rows[0]
     })
-    .catch((err) => {
-        throw err
-    })
+
 }
 
 exports.fetchAllArticles = (sort_by ='created_at', order = 'desc') => {
@@ -56,7 +54,28 @@ exports.fetchAllArticles = (sort_by ='created_at', order = 'desc') => {
     
 
         return result.rows;
-    }).catch(err =>{
-        throw err
+    })
+}
+
+exports.fetchCommentsByArticleId = (article_id) =>{
+    const query = `
+    SELECT
+    comment_id,
+    votes,
+    created_at,
+    author,
+    body,
+    article_id
+    FROM COMMENTS
+    WHERE article_id=$1
+    ORDER BY 
+    created_at DESC;`
+
+    return db.query(query,[article_id]).then((result)=> {
+        if(result.rows.length === 0){
+            return Promise.reject({status: 404, message: 'article not found'})
+        }
+       
+        return result.rows
     })
 }
