@@ -293,3 +293,32 @@ describe('DELETE /api/comments/:comment_id', () => {
         })
     })
 })
+describe('GET /api/users',() => {
+    it('GET 200 it responds with an array of users to the client', () => {
+        return request(app)
+        .get('/api/users')
+        .expect(200)
+        .then(({body}) => {
+            const {users} = body
+            expect(users).toBeInstanceOf(Array)
+            expect(users.length).toBeGreaterThan(0)
+            users.forEach((user) =>{
+                expect(user).toHaveProperty('username')
+                expect(user.username).toBeString()
+                expect(user).toHaveProperty('name')
+                expect(user.name).toBeString()
+                expect(user).toHaveProperty('avatar_url')
+                expect(user.avatar_url).toBeString()
+  
+            })
+        })
+    })
+    it('GET: 404 it responds with 404 if the endpoint is not found', () => {
+        return request(app)
+        .get('/api/non-existent')
+        .expect(404)
+        .then(({ body }) => {
+            expect(body.message).toBe('Not found')
+        })
+    })
+})

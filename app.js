@@ -1,6 +1,6 @@
 const express = require('express')
 const app = express()
-const{getTopics, getArticleById, getAllArticles, getCommentsByArticleId, postCommentToArticle, patchArticleVotes,deleteComment} = require('./controllers/news-controller')
+const{getTopics, getArticleById, getAllArticles, getCommentsByArticleId, postCommentToArticle, patchArticleVotes,deleteComment, getAllUsers} = require('./controllers/news-controller')
 const {psqlErrorHandler, customErrorHandler, serverErrorHandler} = require('./app-error-handlers')
 const endpoints =require('./endpoints.json')
 
@@ -23,6 +23,8 @@ app.post('/api/articles/:article_id/comments', postCommentToArticle)
 app.patch('/api/articles/:article_id', patchArticleVotes)
 
 app.delete('/api/comments/:comment_id', deleteComment)
+
+app.get('/api/users', getAllUsers)
 
 app.all('*', (req, res) => {
     res.status(404).send({ message: 'Not found' });

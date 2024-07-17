@@ -95,10 +95,6 @@ exports.addCommentToArticle = (article_id, author, body) => {
         return result.rows[0]
     })
     .catch((err) => {
-        
-        if(err.code === '23503') {
-            return Promise.reject({status: 404, message: 'article not found'})
-        }
         throw err
     })
 }
@@ -129,5 +125,16 @@ exports.deleteCommentById = (comment_id) => {
                 return Promise.reject({status: 404, message: 'comment not found'})
             }
             return result.rows[0]
+        })
+}
+
+exports.fetchAllUsers = () => {
+    return db.query(`
+        SELECT username, name, avatar_url FROM users;`)
+        .then((result) => {
+            if(result.rows.length === 0){
+                return Promise.reject({status: 404, message: 'Path not found'})
+            }
+            return result.rows
         })
 }
