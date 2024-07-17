@@ -1,3 +1,4 @@
+const { use } = require('../app');
 const db = require('../db/connection');
 
 exports.selectTopics = () => {
@@ -48,7 +49,6 @@ exports.fetchAllArticles = (sort_by ='created_at', order = 'desc') => {
    ORDER BY
    ${sort_by} ${order}`
 
-   console.log(`executing query ${sqlString}`)
    
     return db.query(sqlString).then((result) => {
     
@@ -77,5 +77,28 @@ exports.fetchCommentsByArticleId = (article_id) =>{
         }
        
         return result.rows
+    })
+}
+
+exports.addCommentToArticle = (article_id, author, body) => {
+    if(!author || !body) {
+        return Promise.reject({status: 400, message: 'Missing required field, please provide username & message'})
+    }
+    const query = `
+    INSERT INTO comments(article_id, author, body, created_at)
+    VALUES($1, $2, $3, NOW())
+    RETURNING *;`
+
+    const values = [article_id, author, body]
+    return db.query(query, values)
+    .then((result) => {
+        return result.rows[0]
+    })
+    .catch((err) => {
+        
+        if(err.code === '23503') {
+            return Promise.reject({status: 404, message: 'article not found'})
+        }
+        throw err
     })
 }
