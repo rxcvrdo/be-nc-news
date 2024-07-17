@@ -1,4 +1,4 @@
-const {selectTopics, fetchArticleById, fetchAllArticles, fetchCommentsByArticleId,addCommentToArticle, updateArticleVotes} = require('../models/news-model')
+const {selectTopics, fetchArticleById, fetchAllArticles, fetchCommentsByArticleId,addCommentToArticle, updateArticleVotes, deleteCommentById} = require('../models/news-model')
 
 exports.getTopics = (req, res, next) => {
    
@@ -61,4 +61,13 @@ exports.patchArticleVotes = ( req, res, next) => {
         next (err)
     })
 }
-//
+
+exports.deleteComment= (req, res, next) => {
+    const {comment_id} = req.params
+    deleteCommentById(comment_id)
+    .then((comment) => {
+        res.send(204).send()
+    }).catch((err) => {
+        next(err)
+    })
+}
