@@ -18,7 +18,7 @@ exports.fetchArticleById =(article_id) => {
 
 }
 
-exports.fetchAllArticles = (sort_by ='created_at', order = 'desc') => {
+exports.fetchAllArticles = (sort_by ='created_at', order = 'desc', topic) => {
    validSortBys = ['article_id', 'title', 'topic', 'created_at', 'votes', 'author']
    validOrders = ['asc', 'desc']
 
@@ -44,13 +44,18 @@ exports.fetchAllArticles = (sort_by ='created_at', order = 'desc') => {
    articles
    LEFT JOIN
    comments ON comments.article_id = articles.article_id
-   GROUP BY 
-   articles.article_id
-   ORDER BY
-   ${sort_by} ${order}`
+   `
+   const queryValues = []
+
+   if(topic) {
+    sqlString += ` WHERE articles.topic = $1`;
+    queryValues.push(topic)
+   }
+
+   sqlString += ` GROUP BY articles.article_id ORDER BY ${sort_by} ${order}`
 
    
-    return db.query(sqlString).then((result) => {
+    return db.query(sqlString, queryValues).then((result) => {
     
 
         return result.rows;
@@ -128,7 +133,7 @@ exports.deleteCommentById = (comment_id) => {
         })
 }
 
-exports.fetchAllUsers = () => {
+exports.fetchAllUsers = (sort_by = 'created_at', order = 'desc') => {
     return db.query(`
         SELECT username, name, avatar_url FROM users;`)
         .then((result) => {
@@ -137,4 +142,22 @@ exports.fetchAllUsers = () => {
             }
             return result.rows
         })
+}
+
+exports.getArticlesByTopic = (topic) => {
+let queryStr = 'SELECT * FROM articles'
+const queryValues = []
+
+if(topic){
+    queryStr += `WHERE topic = $1`;
+    queryValues.push(topic)
+}
+
+return db.query(queryStr, queryValues)
+.then((result) => {
+    if(result.rows.length === 0){
+        return Promise.reject({status: 404, message: 'topic not found'})
+    }
+    return result.rows
+})
 }

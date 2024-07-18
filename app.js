@@ -26,6 +26,7 @@ app.delete('/api/comments/:comment_id', deleteComment)
 
 app.get('/api/users', getAllUsers)
 
+
 app.all('*', (req, res) => {
     res.status(404).send({ message: 'Not found' });
   });
