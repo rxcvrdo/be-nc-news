@@ -374,3 +374,15 @@ describe('GET /api/articles (topic query)', () => {
     })
         
 })
+//describe('GET /api/articles/:article_id' , () => {
+ //   it('GET 200 It should respond with an article that incluedes the column comment_count', () => {
+   //     return request(app)
+       // .get('/api/articles/1')
+     //   .expect(200)
+        //.then(({body}) => {
+         //   const {article} = body
+           // expect(article).toHaveProperty('comment_count')
+            //expect(article).toBeString()
+       // })
+   // })
+//})
