@@ -372,6 +372,7 @@ describe('GET /api/articles (topic query)', () => {
         .then(({body}) => {
             const {articles} = body
             expect(articles).toBeInstanceOf(Array)
+            expect(articles.length).toBeGreaterThan(0)
             articles.forEach((article) =>{
                 expect(article.topic).toBe('cats')
             })
@@ -385,7 +386,7 @@ describe('GET /api/articles (topic query)', () => {
             expect(body.message).toBe('Topic not found')
         })
     })
-        
+   
 })
 //describe('GET /api/articles/:article_id' , () => {
  //   it('GET 200 It should respond with an article that incluedes the column comment_count', () => {

@@ -79,12 +79,3 @@ exports.getAllUsers = (req, res, next) => {
         next(err)
     })
 }
-
-exports.getSomeArticles = (req, res, next) => {
-    const {topic} = req.params
-getArticlesByTopic(topic).then((articles) => {
-    res.status(200).send({articles})
-}).catch((err) => {
-    next(err)
-})
-}

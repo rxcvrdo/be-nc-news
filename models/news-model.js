@@ -153,20 +153,3 @@ exports.fetchAllUsers = (sort_by = 'created_at', order = 'desc') => {
         })
 }
 
-exports.getArticlesByTopic = (topic) => {
-let queryStr = 'SELECT * FROM articles'
-const queryValues = []
-
-if(topic){
-    queryStr += `WHERE topic = $1`;
-    queryValues.push(topic)
-}
-
-return db.query(queryStr, queryValues)
-.then((result) => {
-    if(result.rows.length === 0){
-        return Promise.reject({status: 404, message: 'topic not found'})
-    }
-    return result.rows
-})
-}
