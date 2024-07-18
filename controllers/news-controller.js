@@ -1,4 +1,4 @@
-const {selectTopics, fetchArticleById, fetchAllArticles, fetchCommentsByArticleId,addCommentToArticle, updateArticleVotes, deleteCommentById, fetchAllUsers} = require('../models/news-model')
+const {selectTopics, fetchArticleById, fetchAllArticles, fetchCommentsByArticleId,addCommentToArticle, updateArticleVotes, deleteCommentById, fetchAllUsers, getArticlesByTopic} = require('../models/news-model')
 
 exports.getTopics = (req, res, next) => {
    
@@ -17,8 +17,8 @@ exports.getArticleById = (req, res, next) => {
 }
 
 exports.getAllArticles = (req, res, next) => {
-    const {sort_by, order} = req.query
-    fetchAllArticles(sort_by, order)
+    const {sort_by, order, topic} = req.query
+    fetchAllArticles(sort_by, order, topic)
     .then((articles) => {
         res.status(200).send({articles})
     }).catch((err) => {
@@ -73,10 +73,18 @@ exports.deleteComment= (req, res, next) => {
 }
 
 exports.getAllUsers = (req, res, next) => {
-    console.log(req)
     fetchAllUsers().then((users) => {
         res.status(200).send({users})
     }).catch((err)=> {
         next(err)
     })
+}
+
+exports.getSomeArticles = (req, res, next) => {
+    const {topic} = req.params
+getArticlesByTopic(topic).then((articles) => {
+    res.status(200).send({articles})
+}).catch((err) => {
+    next(err)
+})
 }

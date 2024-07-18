@@ -109,6 +109,16 @@ describe('GET /api/articles', () => {
                 {descending: true})
         })
     })
+    it('should return an array of articles in ascending order when given order query', () => {
+        return request(app)
+        .get('/api/articles?order=asc')
+        .expect(200)
+        .then((response) => {
+            expect(response.body.articles.length).toBeGreaterThan(0)
+            expect(response.body.articles).toBeSortedBy('created_at',
+                {ascending: true})
+        })
+    })
     it('should return an array of articles by the given sort by query',() => {
         return request(app)
         .get('/api/articles?sort_by=votes')
@@ -118,6 +128,17 @@ describe('GET /api/articles', () => {
             expect(response.body.articles.length).toBeGreaterThan(0)
             expect(response.body.articles).toBeSortedBy('votes',
                 {descending: true})
+        })
+    })
+    it('should return an array of articles by the given sort by and order query',() => {
+        return request(app)
+        .get('/api/articles?sort_by=votes&order=asc')
+        .expect(200)
+        .expect(200)
+        .then((response) => {
+            expect(response.body.articles.length).toBeGreaterThan(0)
+            expect(response.body.articles).toBeSortedBy('votes',
+                {ascending: true})
         })
     })
     it('it should return a 400 when given a query that does not exist', () => {
@@ -136,7 +157,6 @@ describe('GET /api/articles', () => {
             expect(response.body.message).toBe('Invalid request')
         })
     })
-    
 })
 describe('GET /api/article/:article_id/comments',() => {
     it('should return an array of comments for the given article_id', () => {
@@ -216,7 +236,7 @@ describe('POST /api/article/:article_id/comments', () => {
             expect(response.body.message).toBe('article not found')
         })
     })
-    it('gives an appropriate status code and error message when given an invalid if', () => {
+    it('gives an appropriate status code and error message when given an invalid id', () => {
         const newComment = {username: 'butter_bridge', body:'THIS ARTICLE SUCKS!'}
         return request(app)
         .post('/api/articles/teacup/comments')
@@ -264,6 +284,15 @@ describe('PATCH /api/articles/:article_id', () => {
         return request(app)
         .patch('/api/articles/1')
         .send({inc_votes: 'oneHundred'})
+        .expect(400)
+        .then((response) => {
+            expect (response.body.message).toBe('Bad request')
+        })
+    })
+    it('POST: 400 should return the appropriate status and message when given an invalid id', () => {
+        return request(app)
+        .patch('/api/articles/oneHundred')
+        .send({inc_votes: 90})
         .expect(400)
         .then((response) => {
             expect (response.body.message).toBe('Bad request')
@@ -321,4 +350,27 @@ describe('GET /api/users',() => {
             expect(body.message).toBe('Not found')
         })
     })
+})
+describe('GET /api/articles (topic query)', () => {
+    it('should filter articles by topic', () => {
+        return request(app)
+        .get('/api/articles?topic=cats')
+        .expect(200)
+        .then(({body}) => {
+            const {articles} = body
+            expect(articles).toBeInstanceOf(Array)
+            articles.forEach((article) =>{
+                expect(article.topic).toBe('cats')
+            })
+        })
+    })
+    it('GET: 404 should respond with appropriate status and error message if topic doesnt exist', () => {
+        request(app)
+        .get('/api/articles?topic=tesco')
+        .expect(404)
+        .then(({body}) => {
+            expect(body.message).toBe('Topic not found')
+        })
+    })
+        
 })
