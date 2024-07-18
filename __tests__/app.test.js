@@ -14,6 +14,19 @@ afterAll(() => {
     return db.end()
 })
 
+describe('GET /api/articles/:article_id' , () => {
+   it('GET 200 It should respond with an article that incluedes the column comment_count', () => {
+        return request(app)
+        .get('/api/articles/1')
+        .expect(200)
+        .then(({body}) => {
+            const {article} = body
+            expect(article).toHaveProperty('comment_count')
+            expect(typeof article.comment_count).toBe('string')
+        })
+    })
+})
+
 describe('GET /api/topics', () => {
     it('return a GET: 200 status code and return an array of topics to the client' , () => {
         return request(app)
@@ -374,3 +387,15 @@ describe('GET /api/articles (topic query)', () => {
     })
         
 })
+//describe('GET /api/articles/:article_id' , () => {
+ //   it('GET 200 It should respond with an article that incluedes the column comment_count', () => {
+   //     return request(app)
+       // .get('/api/articles/1')
+     //   .expect(200)
+        //.then(({body}) => {
+         //   const {article} = body
+           // expect(article).toHaveProperty('comment_count')
+            //expect(article).toBeString()
+       // })
+   // })
+//})
