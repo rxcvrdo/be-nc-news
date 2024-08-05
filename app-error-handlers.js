@@ -18,6 +18,5 @@ exports.psqlErrorHandler =(err, req, res, next) => {
 }
 
 exports.serverErrorHandler = ( err, req, res, next) => {
-   
     res.status(500).send({message: 'internal server error'})
 }

@@ -5,6 +5,7 @@ const app = require('../app')
 const data = require('../db/data/test-data/index')
 const endpoints = require('../endpoints.json')
 const comments = require('../db/data/test-data/comments')
+const pool = require('../db/connection')
 
 beforeEach(() => {
     return seed(data)
@@ -379,8 +380,8 @@ describe('GET /api/articles (topic query)', () => {
         })
     })
     it('GET: 404 should respond with appropriate status and error message if topic doesnt exist', () => {
-        request(app)
-        .get('/api/articles?topic=tesco')
+        return request(app)
+        .get('/api/articles?topic=nonexistent')
         .expect(404)
         .then(({body}) => {
             expect(body.message).toBe('Topic not found')
@@ -388,15 +389,84 @@ describe('GET /api/articles (topic query)', () => {
     })
    
 })
-//describe('GET /api/articles/:article_id' , () => {
- //   it('GET 200 It should respond with an article that incluedes the column comment_count', () => {
-   //     return request(app)
-       // .get('/api/articles/1')
-     //   .expect(200)
-        //.then(({body}) => {
-         //   const {article} = body
-           // expect(article).toHaveProperty('comment_count')
-            //expect(article).toBeString()
-       // })
-   // })
+describe('/api/users/:username', () => {
+    it('responds with an array object of the details of the user of the given username', () => {
+        return request(app)
+        .get('/api/users/butter_bridge')
+        .expect(200)
+        .then(({body}) => {
+            const {user} = body
+            expect(user).toHaveProperty('username')
+            expect(user.username).toBe('butter_bridge')
+            expect(user).toHaveProperty('name')
+            expect(user.name).toBe('jonny')
+            expect(user).toHaveProperty('avatar_url')
+            expect(user.avatar_url).toBe('https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg')
+        })
+    })
+    it('GET 404: responds with the appropriate error message and status code when given a username that doesnt exist in database', () => {
+        return request(app)
+        .get('/api/users/rxcvrdo')
+        .expect(404)
+        .then(({body}) => {
+            expect(body.message).toBe('user does not exist')
+        })
+    })
+})
+describe('PATCH /api/comments/:comments_id', () => {
+    it('GET: 200 should respond with an updated comment vote count', () => {
+        return request(app)
+        .patch('/api/comments/1')
+        .send({inc_votes: 1})
+        .expect(200)
+        .then((response) => {
+            const {comment} = response.body
+            expect(comment.comment_id).toBe(2)
+            expect(comment.votes).toBe(15)
+        })
+    })
+    it('GET: 200 should respond with a decreased updated comment vote count', () => {
+        return request(app)
+        .patch('/api/comments/1')
+        .send({inc_votes: -1})
+        .expect(200)
+        .then((response) => {
+            const {comment} = response.body
+            expect(comment.comment_id).toBe(2)
+            expect(comment.votes).toBe(13)
+        })
+    })
+    it('GET: 404 should respond with a appropriate status and message when given a comment hat doesnt exist', () => {
+        return request(app)
+        .patch('/api/comments/999')
+        .send({inc_votes: 1})
+        .expect(404)
+        .then(({body}) => {
+            expect(body.message).toBe('comment not found')
+        })
+    })
+})
+// describe('POST /api/articles', () => {
+//     it('POST: 201 responds with a newly added article', () => {
+//         const newArticle = {
+//             author: 'butter_bridge',
+//             title: 'Northcoders - the gateway to a career in tech',
+//             body: 'a new journey awaits', 
+//             topic: 'coding',
+//             article_img_url: 'https://example.com/image.jpg'
+//         }
+//         return request(app)
+//         .post('/api/articles')
+//         .send(newArticle)
+//         .then((response) => {
+//             console.log(response.body)
+//             const {article} = response.body
+//             expect(article).toHaveProperty('article_id')
+//         })
+            
+
+ //   })
 //})
+
+
+

@@ -1,4 +1,4 @@
-const {selectTopics, fetchArticleById, fetchAllArticles, fetchCommentsByArticleId,addCommentToArticle, updateArticleVotes, deleteCommentById, fetchAllUsers, getArticlesByTopic} = require('../models/news-model')
+const {selectTopics, fetchArticleById, fetchAllArticles, fetchCommentsByArticleId,addCommentToArticle, updateArticleVotes, deleteCommentById, fetchAllUsers, fetchUserByUsername, updateCommentVotes, addArticle} = require('../models/news-model')
 
 exports.getTopics = (req, res, next) => {
    
@@ -78,4 +78,43 @@ exports.getAllUsers = (req, res, next) => {
     }).catch((err)=> {
         next(err)
     })
+}
+
+exports.getUserByUsername = (req, res, next) => {
+    const{username} = req.params
+    fetchUserByUsername(username)
+    .then((user) => {
+        
+        res.status(200).send({user})
+    }).catch((err) => {
+        next(err)
+    })
+}
+
+exports.patchCommentVotes = ( req, res, next) => {
+    const {comment_id} = req.params
+    const {inc_votes} = req.body
+    
+    updateCommentVotes(comment_id, inc_votes)
+   .then((updatedComment) => {
+    
+    res.status(200).send({ comment: updatedComment})
+    })
+    .catch((err) => {
+        next(err)
+    })
+}
+
+exports.postArticle = (req, res, next) => {
+    const {author, title, body, topic, article_img_url} = req.body
+
+    if(!author || !title || !body|| !topic) {
+    return Promise.reject({status: 404, message: 'Bad request: missing required fields'})
+}
+   addArticle({author, title, body, topic, article_img_url})
+   .then((article) => {
+    res.status(201).send({article})
+   }).catch((err) => {
+    next(err)
+   })
 }

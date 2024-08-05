@@ -92,6 +92,51 @@
     "exampleResponse": {
       "status": 204
     }
+  },
+  "GET /api/users": {
+    "description": "Serves an array of all users",
+    "exampleResponse": {
+      "users": [
+        {
+          "username": "jessjelly",
+          "avatar_url": "https://example.com/avatar.jpg",
+          "name": "Jessica Jelly"
+        },
+        {
+          "username": "weegembump",
+          "avatar_url": "https://example.com/avatar2.jpg",
+          "name": "Weegem Bump"
+        }
+      ]
+    }
+  },
+  "GET /api/users/:username": {
+    "description": "Serves a specific user by username",
+    "exampleRequest": "/api/users/jessjelly",
+    "exampleResponse": {
+      "user": {
+        "username": "jessjelly",
+        "avatar_url": "https://example.com/avatar.jpg",
+        "name": "Jessica Jelly"
+      }
+    }
+  },
+  "PATCH /api/comments/:comment_id": {
+    "description": "Updates the votes on a comment given the comment's comment_id",
+    "exampleRequest": {
+      "inc_votes": 2
+    },
+    "exampleResponse": {
+      "comment": {
+        "comment_id": 1,
+        "votes": 11,
+        "created_at": "2020-07-09T20:11:00.000Z",
+        "author": "butter_bridge",
+        "body": "This is a comment.",
+        "article_id": 1
+      }
+    }
   }
-  
 }
+  
+

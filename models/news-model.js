@@ -69,6 +69,7 @@ exports.fetchAllArticles = (sort_by ='created_at', order = 'desc', topic) => {
 
         return result.rows;
     })
+    
 }
 
 exports.fetchCommentsByArticleId = (article_id) =>{
@@ -151,5 +152,47 @@ exports.fetchAllUsers = (sort_by = 'created_at', order = 'desc') => {
             }
             return result.rows
         })
+}
+
+exports.fetchUserByUsername =(username) => {
+    return db.query(`SELECT * FROM users WHERE username = $1;`, [username])
+    .then((result) => {
+        if(result.rows.length ===0){
+            return Promise.reject({status: 404, message: 'user does not exist'})
+        }
+        return result.rows[0]
+    })
+
+}
+
+exports.updateCommentVotes = (comment_id, inc_votes) => {
+    return db.query(`
+        UPDATE comments 
+        SET votes = votes + $1
+        WHERE article_id = $2
+        RETURNING *;`, [inc_votes, comment_id])
+        .then((result) => {
+            if(result.rows.length === 0) {
+                return Promise.reject({status: 404, message: 'comment not found'})
+            }
+            return result.rows[0]
+        })
+
+}
+
+exports.addArticle = (author, title, body, topic, article_img_url) => {
+    const query = `
+    INSERT INTO articles(author, title, body, topic, article_img_url)
+    VALUES ($1, $2, $3, $4, $5)
+    RETURNING article_id, author, title, body, topic, article_img, votes, created_at;
+    `
+    const values = [author, title, body, topic, article_img_url]
+    return db.query(query, values)
+    .then(({rows}) => {
+        console.log(rows)
+        const article = rows[0]
+        article.comment_count = 0
+        return article
+    })
 }
 
