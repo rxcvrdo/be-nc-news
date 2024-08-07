@@ -211,7 +211,7 @@ describe('GET /api/article/:article_id/comments',() => {
         .get('/api/articles/999/comments')
         .expect(404)
         .then(({body}) => {
-            expect(body.message).toBe('article not found')
+            expect(body.message).toBe('article does not exist')
         })
     })
     it('GET: 400 should return appropriate status and message when given a non-valid article id', () => {
@@ -219,6 +219,13 @@ describe('GET /api/article/:article_id/comments',() => {
         .get('/api/articles/riceIstheBest/comments')
         .then((response) => {
             expect(response.body.message).toBe('Bad request')
+        })
+    })
+    it('get: 200 should return an empty array where article exists but has no comments', () => {
+        return request(app)
+        .get('/api/articles/13/comments')
+        .then((response) => {
+            expect(response.body.comments).toEqual([])
         })
     })
 

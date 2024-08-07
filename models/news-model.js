@@ -87,10 +87,8 @@ exports.fetchCommentsByArticleId = (article_id) =>{
     created_at DESC;`
 
     return db.query(query,[article_id]).then((result)=> {
-        if(result.rows.length === 0){
-            return Promise.reject({status: 404, message: 'article not found'})
-        }
-       
+      
+        
         return result.rows
     })
 }
