@@ -155,6 +155,149 @@ describe('GET /api/articles', () => {
                 {ascending: true})
         })
     })
+    it('should return an array of articles by the given sort by and order query', () => {
+        return request(app)
+        .get('/api/articles?sort_by=comment_count&order=asc')
+        .expect(200)
+        .then((response) => {
+        console.log(response.body.articles)
+            expect(response.body.articles.length).toBeGreaterThan(0)
+            expect(response.body.articles).toEqual(
+              [
+                {
+                  article_id: 12,
+                  title: 'Moustache',
+                  topic: 'mitch',
+                  votes: 0,
+                  created_at: '2020-10-11T11:24:00.000Z',
+                  author: 'butter_bridge',
+                  article_img_url: 'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700',
+                  comment_count: '0'
+                },
+                {
+                  article_id: 4,
+                  title: 'Student SUES Mitch!',
+                  topic: 'mitch',
+                  votes: 0,
+                  created_at: '2020-05-06T01:14:00.000Z',
+                  author: 'rogersop',
+                  article_img_url: 'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700',
+                  comment_count: '0'
+                },
+                {
+                  article_id: 10,
+                  title: 'Seven inspirational thought leaders from Manchester UK',
+                  topic: 'mitch',
+                  votes: 0,
+                  created_at: '2020-05-14T04:15:00.000Z',
+                  author: 'rogersop',
+                  article_img_url: 'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700',
+                  comment_count: '0'
+                },
+                {
+                  article_id: 13,
+                  title: 'Another article about Mitch',
+                  topic: 'mitch',
+                  votes: 0,
+                  created_at: '2020-10-11T11:24:00.000Z',
+                  author: 'butter_bridge',
+                  article_img_url: 'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700',
+                  comment_count: '0'
+                },
+                {
+                  article_id: 2,
+                  title: 'Sony Vaio; or, The Laptop',
+                  topic: 'mitch',
+                  votes: 0,
+                  created_at: '2020-10-16T05:03:00.000Z',
+                  author: 'icellusedkars',
+                  article_img_url: 'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700',
+                  comment_count: '0'
+                },
+                {
+                  article_id: 7,
+                  title: 'Z',
+                  topic: 'mitch',
+                  votes: 0,
+                  created_at: '2020-01-07T14:08:00.000Z',
+                  author: 'icellusedkars',
+                  article_img_url: 'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700',
+                  comment_count: '0'
+                },
+                {
+                  article_id: 8,
+                  title: 'Does Mitch predate civilisation?',
+                  topic: 'mitch',
+                  votes: 0,
+                  created_at: '2020-04-17T01:08:00.000Z',
+                  author: 'icellusedkars',
+                  article_img_url: 'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700',
+                  comment_count: '0'
+                },
+                {
+                  article_id: 11,
+                  title: 'Am I a cat?',
+                  topic: 'mitch',
+                  votes: 0,
+                  created_at: '2020-01-15T22:21:00.000Z',
+                  author: 'icellusedkars',
+                  article_img_url: 'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700',
+                  comment_count: '0'
+                },
+                {
+                  article_id: 6,
+                  title: 'A',
+                  topic: 'mitch',
+                  votes: 0,
+                  created_at: '2020-10-18T01:00:00.000Z',
+                  author: 'icellusedkars',
+                  article_img_url: 'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700',
+                  comment_count: '1'
+                },
+                {
+                  article_id: 3,
+                  title: 'Eight pug gifs that remind me of mitch',
+                  topic: 'mitch',
+                  votes: 0,
+                  created_at: '2020-11-03T09:12:00.000Z',
+                  author: 'icellusedkars',
+                  article_img_url: 'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700',
+                  comment_count: '2'
+                },
+                {
+                  article_id: 5,
+                  title: 'UNCOVERED: catspiracy to bring down democracy',
+                  topic: 'cats',
+                  votes: 0,
+                  created_at: '2020-08-03T13:14:00.000Z',
+                  author: 'rogersop',
+                  article_img_url: 'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700',
+                  comment_count: '2'
+                },
+                {
+                  article_id: 9,
+                  title: "They're not exactly dogs, are they?",
+                  topic: 'mitch',
+                  votes: 0,
+                  created_at: '2020-06-06T09:10:00.000Z',
+                  author: 'butter_bridge',
+                  article_img_url: 'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700',
+                  comment_count: '2'
+                },
+                {
+                  article_id: 1,
+                  title: 'Living in the shadow of a great man',
+                  topic: 'mitch',
+                  votes: 100,
+                  created_at: '2020-07-09T20:11:00.000Z',
+                  author: 'butter_bridge',
+                  article_img_url: 'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700',
+                  comment_count: '11'
+                }
+              ])
+        })
+        
+    })
     it('it should return a 400 when given a query that does not exist', () => {
         return request(app)
         .get('/api/articles?sort_by=favourite_cheese')

@@ -25,7 +25,7 @@ exports.fetchArticleById =(article_id) => {
 }
 
 exports.fetchAllArticles = (sort_by ='created_at', order = 'desc', topic) => {
-   validSortBys = ['article_id', 'title', 'topic', 'created_at', 'votes', 'author']
+   validSortBys = ['article_id', 'title', 'topic', 'created_at', 'votes', 'author', 'comment_count']
    validOrders = ['asc', 'desc']
 
    if(!validSortBys.includes(sort_by)){
@@ -65,6 +65,7 @@ exports.fetchAllArticles = (sort_by ='created_at', order = 'desc', topic) => {
         if(result.rows.length ===0) {
             return Promise.reject({status: 404, message: 'Topic not found'})
         }
+        console.log(result.rows)
     
 
         return result.rows;
